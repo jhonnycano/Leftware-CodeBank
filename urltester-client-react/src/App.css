@@ -1,0 +1,30 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.container form {
+  display: flex; /* Use flexbox for horizontal layout */
+  gap: 10px; /* Set the gap between elements to 10 pixels */
+}
+
+.container pre {
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.loading {
+  width: 64px;
+  height: 64px;
+  display: flex; /* Use flexbox for horizontal layout */
+  gap: 10px; /* Set the gap between elements to 10 pixels */
+}
