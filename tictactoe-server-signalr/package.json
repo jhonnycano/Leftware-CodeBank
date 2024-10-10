@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "name": "tictactoe_signalr",
+  "private": true,
+  "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
+    "bootstrap": "^5.3.3",
+    "jquery": "3.7.1",
+    "tabulator-tables": "^6.2.5"
+  }
+}

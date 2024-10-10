@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Leftware Games</title>
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/node_modules/tabulator-tables/dist/css/tabulator.min.css" />
+  <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="/node_modules/@microsoft/signalr/dist/browser/signalr.min.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/node_modules/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <script type="text/javascript">
+    const root = {};
+
+    function sendCommand(command, argument) {
+      const argAsJson = JSON.stringify(argument);
+      root.connection.send("ExecuteCommand", command, argAsJson);
+    }
+
+    function btnAddUser_click(ev) {
+      root.btnAddUser.prop("disabled", true);
+      const name = root.txtUsername.val();
+      sendCommand("AddUser", { username: name });
+    }
+
+    function btnGetList_click(ev) {
+      root.btnGetList.prop("disabled", true);
+      sendCommand("GetGameList", { "filter": "" });
+    }
+
+    function btnCreateGame_click(ev) {
+      sendCommand("CreateGame", {});
+    }
+
+    function btnHome_click(ev) {
+      root.gameId = null;
+      root.turn = null;
+      root.avatar = null;
+      root.winner = null;
+
+      root.btnHome.hide();
+      root.gameContainer.hide();
+      root.gameCanvas.hide();
+      root.gameList.show();
+    }
+
+    function lnkJoin_click(ev) {
+      ev.preventDefault();
+      $this = $(this);
+      const id = $this.data("id");
+      sendCommand("JoinGame", { gameId: id });
+    }
+
+    function field_click(ev) {
+      if (root.winner) { return; }
+      if (root.turn !== root.connection.connectionId) { return; }
+
+      const $this = $(this);
+      const $p = $($this.children("p")[0]);
+      const value = $p.text();
+      const ind = $this.data("ind");
+      if (value !== "_") { return; }
+
+      sendCommand("ProcessMove", { "gameId": root.gameId, "moveDetail": { "move": ind } });
+    }
+
+    function onUserAdded(msg) {
+      root.addUser.hide();
+      root.gameList.show();
+      root.btnAddUser.prop("disabled", false);
+    }
+
+    function onGameListRetrieved(msg) {
+      root.btnGetList.prop("disabled", false);
+      if (!msg.success) {
+        root.gameListContent.text(`Could not retrieve game list. Message: '${msg.message}'`);
+        return;
+      }
+
+      if (!msg.data || !msg.data.length) {
+        root.gameListContent.text(`No games in server. Try creating one`);
+        return;
+      }
+
+      renderList(msg.data, "#gameListContent");
+    }
+
+    function onGameCreated(msg) {
+      root.gameList.hide();
+      root.gameContainer.show();
+      root.gameCanvas.show();
+      root.gameCanvas.empty();
+
+      showMessage("Waiting for a player to join...");
+
+      root.btnCreateGame.prop("disabled", false);
+      root.btnGetList.prop("disabled", false);
+    }
+
+    function onGameStarted(msg) {
+      root.gameId = msg.gameId;
+      root.turn = msg.turn;
+      root.avatar = msg.avatar;
+      root.winner = null;
+
+      root.gameListContent.empty();
+      root.gameListContent.attr("class", "");
+      root.gameCanvas.empty();
+
+      const labelContent = root.turn === root.connection.connectionId ? "Make your move" : "Waiting for other player's move";
+      showMessage(labelContent);
+
+      renderCanvas({ "state": ["_", "_", "_", "_", "_", "_", "_", "_", "_"] }, root.gameCanvas);
+
+      root.gameList.hide();
+      root.gameContainer.show();
+      root.gameCanvas.show();
+      root.btnCreateGame.prop("disabled", false);
+      root.btnGetList.prop("disabled", false);
+    }
+
+    function onGameMoveProcessed(msg) {
+      root.result = msg.moveInfo.result;
+      root.turn = msg.moveInfo.turn;
+      root.winnerId = msg.moveInfo.winnerId;
+      root.winnerName = msg.moveInfo.winnerName;
+
+      const labelContent = root.result === "Finished"
+        ? root.winnerId !== null ?
+          `Winner: ${root.winnerName}` :
+          "Draw"
+        : root.turn === root.connection.connectionId ? "Make your move" : "Waiting for other player's move";
+      const alertType = root.winnerId === null ? "primary" : root.winnerId === root.connection.connectionId ? "success" : "danger";
+      showMessage(labelContent, alertType);
+
+      renderCanvas({ "state": msg.moveInfo.board }, root.gameCanvas);
+
+      if (root.result === "Finished") {
+        root.btnHome.show();
+        return;
+      }
+    }
+
+    function renderList(data, target) {
+      $(target).empty();
+      data.forEach(i => i.link = `<a class="lnkJoin" data-id="${i.id}" href="#">Join</a>`);
+
+      var table = new Tabulator(target, {
+        data: data,
+        layout: "fitColumns", 
+        columns: [
+          { title: "Game Type", field: "type", hozAlign: "left", },
+          { title: "Opponent", field: "user", hozAlign: "left", },
+          { title: "", field: "link", hozAlign: "left", formatter: "html", },
+        ]
+      });
+    }
+
+    function showMessage(label, type) {
+      if (!type) { type = 'primary'; }
+      root.gameLabelAlert.show();
+      root.gameLabelAlert.attr("class", `alert alert-dismissible fade show alert-${type}`);
+      root.gameLabelContent.text(label);
+    }
+
+    function renderCanvas(data, target) {
+      const arr = [];
+
+      data.state.forEach((itm, ind) => {
+        const field = $(`<div class="field"><p>${itm}</p></div>`);
+        field.data("ind", ind);
+        arr.push(field);
+      });
+
+      target.empty();
+      arr.forEach(f => target.append(f));
+    }
+
+    $(function () {
+      root.gameList = $("#gameList");
+      root.gameListContent = $("#gameListContent");
+      root.gameContainer = $("#gameContainer");
+      root.gameCanvas = $("#gameCanvas");
+      root.gameLabel = $("#gameLabel");
+      root.gameLabelAlert = $("#gameLabelAlert");
+      root.gameLabelContent = $("#gameLabelContent");
+      root.addUser = $("#addUser");
+
+      root.btnAddUser = $("#btnAddUser");
+      root.btnGetList = $("#btnGetList");
+      root.btnCreateGame = $("#btnCreateGame");
+      root.btnHome = $("#btnHome");
+      root.txtUsername = $("#txtUsername");
+
+      root.gameList.hide();
+      root.gameContainer.hide();
+      root.gameCanvas.hide();
+      root.btnHome.hide();
+
+      root.btnAddUser.on("click", btnAddUser_click);
+      root.btnGetList.on("click", btnGetList_click);
+      root.btnCreateGame.on("click", btnCreateGame_click);
+      root.btnHome.on("click", btnHome_click);
+      root.gameListContent.on("click", ".lnkJoin", lnkJoin_click);
+      root.gameCanvas.on("click", ".field", field_click);
+      root.connection = new signalR.HubConnectionBuilder()
+        .withUrl("/tictactoe")
+        .build();
+      root.connection.on("SendMessage", (msg) => {
+        console.log(`Received message ${msg}`);
+        const message = JSON.parse(msg);
+        const messageType = message.messageType;
+        delete message.messageType;
+        switch (messageType) {
+          case "UserAdded":
+            onUserAdded(message);
+            break;
+          case "GameListRetrieved":
+            onGameListRetrieved(message);
+            break;
+          case "GameCreated":
+            onGameCreated(message);
+            break;
+          case "GameStarted":
+            onGameStarted(message);
+            break;
+          case "GameMoveProcessed":
+            onGameMoveProcessed(message);
+            break;
+        }
+      });
+
+      root.connection.onclose((error) => {
+        console.error("Connection closed:", error);
+      });
+
+      root.connection.start()
+        .then(() => {
+          console.log("Connection started");
+          console.log(root.connection.connectionId);
+          sendCommand("Hello", {});
+        })
+        .catch(error => console.error(error));
+    });
+  </script>
+  <style>
+    main {
+      text-align: center;
+      padding: 1em;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    #gameContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: auto;
+    }
+
+    #gameCanvas {
+      display: grid;
+      margin: 0 auto;
+      width: 80%;
+      max-width: 320px;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    #gameLabel {
+      text-align: center;
+    }
+
+    .field {
+      background-color: #2d2d2d;
+      cursor: pointer;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+    }
+
+      .field:hover {
+        background-color: #383838;
+      }
+
+      .field p {
+        font-size: 48px;
+        font-weight: bold;
+        color: white;
+      }
+  </style>
+</head>
+<body>
+  <main class="container mt-5">
+    <div id="addUser" class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="txtUsername">Username:</label>
+              <input id="txtUsername" name="txtUsername" type="text" class="form-control" placeholder="Enter username" autofocus />
+            </div>
+            <button id="btnAddUser" name="btnAddUser" type="button" class="btn btn-primary mt-2">Add user</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="gameList" class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <div id="gameListContent"></div>
+            <button id="btnGetList" name="btnGetList" type="button" class="btn btn-primary mt-2">Get list</button>
+            <div id="gameCreate">
+              <button id="btnCreateGame" name="btnCreateGame" type="button" class="btn btn-primary mt-2">Create game</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="gameContainer">
+      <div id="gameCanvas">
+      </div>
+      <div id="gameLabel" class="mt-4">
+        <div id="gameLabelAlert" role="alert">
+          <span id="gameLabelContent"></span>
+        </div>
+      </div>
+      <button id="btnHome" name="btnHome" type="button" class="btn btn-primary mt-2">Home</button>
+    </div>
+    <div id="log"></div>
+  </main>
+</body>
+</html>
