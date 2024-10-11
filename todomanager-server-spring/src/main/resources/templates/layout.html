@@ -3,15 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title}"></title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
-    <header></header>
-    <main th:block>
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <a href="/web" class="logo">
+                        <img th:src="@{/img/logo-128x128.png}" alt="Logo">
+                    </a>
+                </div>
+                <div class="col-md-10">
+                    Todo Manager
+                </div>
+            </div>
+        </div>
+    </header>
+    <main th:block class="container">
         <div th:replace="${content}"></div>
     </main>
-    <footer>Footer</footer>
+    <footer>
+        <p>Copyright (c) 2024</p>
+    </footer>
 </body>
 
 </html>

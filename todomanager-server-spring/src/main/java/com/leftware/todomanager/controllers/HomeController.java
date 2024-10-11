@@ -1,6 +1,7 @@
 package com.leftware.todomanager.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -12,7 +13,9 @@ public class HomeController {
     }
 
     @GetMapping("/web")
-    public String web() {
-        return "home";
+    public String web(Model model) {
+        model.addAttribute("title", "Home");
+        model.addAttribute("content", "home");
+        return "layout";
     }
 }

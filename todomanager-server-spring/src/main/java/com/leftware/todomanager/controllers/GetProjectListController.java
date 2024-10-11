@@ -18,9 +18,6 @@ public class GetProjectListController {
 
     @GetMapping("/web/projects")
     public String execute(Model model) {
-        // List<Project> projects = new ArrayList<>();
-        // projects.add(new Project("asd1", "home"));
-        // projects.add(new Project("asd2", "work"));
         var projects = projectService.getProjects();
 
         model.addAttribute("projects", projects);
