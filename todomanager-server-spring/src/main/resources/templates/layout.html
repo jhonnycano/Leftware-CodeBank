@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Todo Manager">
+    <meta name="author" content="Jhonny D. Cano">
     <title th:text="${title}"></title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -11,24 +13,34 @@
 
 <body>
     <header class="header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-2">
-                    <a href="/web" class="logo">
-                        <img th:src="@{/img/logo-128x128.png}" alt="Logo">
-                    </a>
-                </div>
-                <div class="col-md-10">
-                    Todo Manager
-                </div>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <a class="navbar-brand" href="/web">
+                <img th:src="@{/img/logo-128x128.png}" width="32" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/web">Todo Manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/projects">Projects</a>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </nav>
     </header>
-    <main th:block class="container">
-        <div th:replace="${content}"></div>
+    <main th:block role="main" class="container">
+        <div th:replace="~{${content}}"></div>
     </main>
-    <footer>
-        <p>Copyright (c) 2024</p>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Copyright (c) 2024</span>
+        </div>
     </footer>
 </body>
 

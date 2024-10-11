@@ -2,14 +2,16 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Id</th>
                 <th>Name</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="project : ${projects}">
                 <td th:text="${project.id}"></td>
                 <td th:text="${project.name}"></td>
+                <td><a th:href="@{/web/projects/{id}(id=${project.id})}">View</a></td>
             </tr>
         </tbody>
     </table>

@@ -9,5 +9,4 @@ public class TodomanagerApplication {
     public static void main(String[] args) {
         SpringApplication.run(TodomanagerApplication.class, args);
     }
-
 }
