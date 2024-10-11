@@ -2,6 +2,7 @@ package com.leftware.todomanager.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class ProjectService {
 
     public ProjectService() {
         List<Project> projectList = new ArrayList<>();
-        projectList.add(new Project("asd1", "home"));
-        projectList.add(new Project("asd2", "work"));
+        projectList.add(new Project(UUID.randomUUID().toString(), "home"));
+        projectList.add(new Project(UUID.randomUUID().toString(), "work"));
 
         this.projects = projectList;
     }
@@ -25,8 +26,14 @@ public class ProjectService {
     }
 
     public Project getProjectById(String projectId) {
-        Project project = new Project("asd1", "home");
+        Project project = projects.stream()
+                .filter(p -> (p.getId().equals(projectId)))
+                .findFirst()
+                .orElse(null);
         return project;
     }
 
+    public void addProject(Project project) {
+        projects.add(project);
+    }
 }

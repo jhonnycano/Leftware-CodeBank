@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.leftware.todomanager.common.Constants;
 import com.leftware.todomanager.models.Project;
 import com.leftware.todomanager.models.Task;
 import com.leftware.todomanager.services.ProjectService;
@@ -39,7 +40,7 @@ public class GetProjectController {
         model.addAttribute("project", project);
         model.addAttribute("tasks", tasks);
         model.addAttribute("title", projectTitle);
-        model.addAttribute("content", "project");
+        model.addAttribute("content", Constants.VIEW_PROJECT_VIEW);
         return "layout";
     }
 }

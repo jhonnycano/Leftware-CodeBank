@@ -4,7 +4,12 @@
         This project implements a simple Todo Manager
     </p>
 
+    <div th:if="${message != null}" class="alert alert-primary" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+
     <ul>
         <li><a href="/web/projects">Project List</a></li>
+        <li><a href="/web/projects/new">Create</a></li>
     </ul>
 </div>
