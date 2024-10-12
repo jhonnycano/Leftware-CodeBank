@@ -1,3 +1,4 @@
+<th:block th:with="projectId=${project.id}"></th:block>
 <div th:fragment="project">
     <div class="row mb-3">
         <div class="col-md-12">
@@ -61,7 +62,7 @@
                 <div class="card">
                     <div class="card-header">Done</div>
                     <ul class="list-group list-group-flush" id="done-list">
-                        <li th:each="task : ${tasks}" th:if="${task.status == 'Completed'}" class="list-group-item"
+                        <li th:each="task : ${tasks}" th:if="${task.status == 'Done'}" class="list-group-item"
                             draggable="true" th:id="'task-' + ${task.id}">
                             <span th:text="${task.text}"></span>
                         </li>
@@ -72,10 +73,32 @@
     </div>
     <a th:href="@{/web/projects/{id}/tasks/new(id=${project.id})}">Create task</a>
 
-    <script>
+    <script th:inline="javascript">
+        const projectId = /*[[${projectId}]]*/;
         const todoDiv = document.getElementById('todo');
         const inProgressDiv = document.getElementById('in-progress');
         const doneDiv = document.getElementById('done');
+
+        function moveTask(e, target) {
+            const elementId = e.dataTransfer.getData('text/plain');
+            const taskId = elementId.substring(5);
+            const targetStatus = target == todoDiv
+                ? 'Pending'
+                : target == inProgressDiv
+                    ? 'In Progress'
+                    : 'Done';
+            
+            window.location.href = encodeURI(`/web/projects/${projectId}/tasks/${taskId}/changestatus?status=` + targetStatus);
+            const element = document.getElementById(elementId);
+            const newElement = element.cloneNode(true);
+            element.remove();
+
+            target.querySelector('ul').appendChild(newElement);
+
+            newElement.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', newElement.id);
+            });
+        }
 
         todoDiv.querySelectorAll('li').forEach(li => {
             li.addEventListener('dragstart', (e) => {
@@ -101,17 +124,7 @@
 
         todoDiv.addEventListener('drop', (e) => {
             e.preventDefault();
-            const taskId = e.dataTransfer.getData('text/plain');
-            const sourceLi = document.getElementById(taskId);
-            const newLi = sourceLi.cloneNode(true);
-            newLi.id = `new-${taskId}`; // Generate a new ID for the cloned element
-            todoDiv.querySelector('ul').appendChild(newLi);
-            sourceLi.remove();
-
-            // Attach drag event listeners to the newly created element
-            newLi.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', newLi.id);
-            });
+            moveTask(e, todoDiv);
         });
 
         inProgressDiv.addEventListener('dragover', (e) => {
@@ -120,17 +133,7 @@
 
         inProgressDiv.addEventListener('drop', (e) => {
             e.preventDefault();
-            const taskId = e.dataTransfer.getData('text/plain');
-            const sourceLi = document.getElementById(taskId);
-            const newLi = sourceLi.cloneNode(true);
-            newLi.id = `new-${taskId}`; // Generate a new ID for the cloned element
-            inProgressDiv.querySelector('ul').appendChild(newLi);
-            sourceLi.remove();
-
-            // Attach drag event listeners to the newly created element
-            newLi.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', newLi.id);
-            });
+            moveTask(e, inProgressDiv);
         });
 
         doneDiv.addEventListener('dragover', (e) => {
@@ -139,17 +142,7 @@
 
         doneDiv.addEventListener('drop', (e) => {
             e.preventDefault();
-            const taskId = e.dataTransfer.getData('text/plain');
-            const sourceLi = document.getElementById(taskId);
-            const newLi = sourceLi.cloneNode(true);
-            newLi.id = `new-${taskId}`; // Generate a new ID for the cloned element
-            doneDiv.querySelector('ul').appendChild(newLi);
-            sourceLi.remove();
-
-            // Attach drag event listeners to the newly created element
-            newLi.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', newLi.id);
-            });
+            moveTask(e, doneDiv);
         });
     </script>
 </div>
