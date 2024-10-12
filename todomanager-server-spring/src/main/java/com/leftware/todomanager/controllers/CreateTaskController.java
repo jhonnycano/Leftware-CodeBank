@@ -32,9 +32,18 @@ public class CreateTaskController {
 
     @GetMapping("/web/projects/{projectId}/tasks/new")
     public String execute(
+            @PathVariable String projectId,
             Model model
     ) {
+        var project = projectService.getProjectById(projectId);
+        if (project == null) {
+            model.addAttribute("content", Constants.VIEW_HOME);
+            model.addAttribute("message", "Project not found");
+            return "layout";
+        }
+
         model.addAttribute("title", "Create task");
+        model.addAttribute("projectId", projectId);
         model.addAttribute("content", "task_create");
         return "layout";
     }
@@ -45,11 +54,6 @@ public class CreateTaskController {
             @ModelAttribute CreateTaskRequest createTaskRequest,
             Model model
     ) {
-        UUID uuid = UUID.randomUUID();
-        String id = uuid.toString();
-        Task task = new Task(id, projectId, createTaskRequest.getText(), "Pending", null);
-        taskService.addTask(task);
-
         var project = projectService.getProjectById(projectId);
         if (project == null) {
             model.addAttribute("content", Constants.VIEW_HOME);
@@ -57,11 +61,11 @@ public class CreateTaskController {
             return "layout";
         }
 
-        String projectTitle = String.format("Project %s: %s", projectId, project.getName());
+        UUID uuid = UUID.randomUUID();
+        String id = uuid.toString();
+        Task task = new Task(id, projectId, createTaskRequest.getText(), "Pending", null);
+        taskService.addTask(task);
 
-        model.addAttribute("project", project);
-        model.addAttribute("title", projectTitle);
-        model.addAttribute("content", Constants.VIEW_PROJECT_LIST);
-        return "layout";
+        return String.format("redirect:/web/projects/%s", projectId);
     }
 }

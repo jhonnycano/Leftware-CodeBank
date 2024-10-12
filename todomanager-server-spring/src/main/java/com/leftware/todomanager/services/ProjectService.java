@@ -15,7 +15,7 @@ public class ProjectService {
 
     public ProjectService() {
         List<Project> projectList = new ArrayList<>();
-        projectList.add(new Project(UUID.randomUUID().toString(), "home"));
+        projectList.add(new Project("123", "home"));
         projectList.add(new Project(UUID.randomUUID().toString(), "work"));
 
         this.projects = projectList;

@@ -1,5 +1,5 @@
 <div th:fragment="task_create">
-    <form th:action="@{/web/projects/{id}/tasks(id=${project.id})}" method="post">
+    <form th:action="@{/web/projects/{id}/tasks(id=${projectId})}" method="post">
         <div class="mb-3">
             <label for="text" class="form-label">Text</label>
             <input type="text" class="form-control" id="text" name="text" required>

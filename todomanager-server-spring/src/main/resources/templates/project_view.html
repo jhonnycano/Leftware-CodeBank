@@ -15,14 +15,13 @@
             </div>
         </div>
     </div>
-
-    <table class="table">
+    <table th:if="${mode == 'table'}" class="table table-fixed table-bordered table-striped table-responsive table-sm">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Text</th>
-                <th>Status</th>
-                <th>Completed at</th>
+                <th class="col-lg-2">Id</th>
+                <th class="col-lg-2">Text</th>
+                <th class="col-lg-2">Status</th>
+                <th class="col-lg-2">Completed at</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +33,123 @@
             </tr>
         </tbody>
     </table>
+    <div th:if="${mode == 'board'}">
+        <div class="row">
+            <div class="col-md-4" id="todo">
+                <div class="card">
+                    <div class="card-header">To Do</div>
+                    <ul class="list-group list-group-flush" id="todo-list">
+                        <li th:each="task : ${tasks}" th:if="${task.status == 'Pending'}" class="list-group-item"
+                            draggable="true" th:id="'task-' + ${task.id}">
+                            <span th:text="${task.text}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4" id="in-progress">
+                <div class="card">
+                    <div class="card-header">In Progress</div>
+                    <ul class="list-group list-group-flush" id="in-progress-list">
+                        <li th:each="task : ${tasks}" th:if="${task.status == 'In Progress'}" class="list-group-item"
+                            draggable="true" th:id="'task-' + ${task.id}">
+                            <span th:text="${task.text}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4" id="done">
+                <div class="card">
+                    <div class="card-header">Done</div>
+                    <ul class="list-group list-group-flush" id="done-list">
+                        <li th:each="task : ${tasks}" th:if="${task.status == 'Completed'}" class="list-group-item"
+                            draggable="true" th:id="'task-' + ${task.id}">
+                            <span th:text="${task.text}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <a th:href="@{/web/projects/{id}/tasks/new(id=${project.id})}">Create task</a>
-    
+
+    <script>
+        const todoDiv = document.getElementById('todo');
+        const inProgressDiv = document.getElementById('in-progress');
+        const doneDiv = document.getElementById('done');
+
+        todoDiv.querySelectorAll('li').forEach(li => {
+            li.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', li.id);
+            });
+        });
+
+        inProgressDiv.querySelectorAll('li').forEach(li => {
+            li.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', li.id);
+            });
+        });
+
+        doneDiv.querySelectorAll('li').forEach(li => {
+            li.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', li.id);
+            });
+        });
+
+        todoDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        todoDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const sourceLi = document.getElementById(taskId);
+            const newLi = sourceLi.cloneNode(true);
+            newLi.id = `new-${taskId}`; // Generate a new ID for the cloned element
+            todoDiv.querySelector('ul').appendChild(newLi);
+            sourceLi.remove();
+
+            // Attach drag event listeners to the newly created element
+            newLi.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', newLi.id);
+            });
+        });
+
+        inProgressDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        inProgressDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const sourceLi = document.getElementById(taskId);
+            const newLi = sourceLi.cloneNode(true);
+            newLi.id = `new-${taskId}`; // Generate a new ID for the cloned element
+            inProgressDiv.querySelector('ul').appendChild(newLi);
+            sourceLi.remove();
+
+            // Attach drag event listeners to the newly created element
+            newLi.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', newLi.id);
+            });
+        });
+
+        doneDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        doneDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const sourceLi = document.getElementById(taskId);
+            const newLi = sourceLi.cloneNode(true);
+            newLi.id = `new-${taskId}`; // Generate a new ID for the cloned element
+            doneDiv.querySelector('ul').appendChild(newLi);
+            sourceLi.remove();
+
+            // Attach drag event listeners to the newly created element
+            newLi.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', newLi.id);
+            });
+        });
+    </script>
 </div>
