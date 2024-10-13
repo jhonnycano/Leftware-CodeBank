@@ -2,6 +2,8 @@ package com.leftware.todomanager.entities;
 
 import java.time.LocalDateTime;
 
+import com.leftware.todomanager.common.LocalDateTimeAttributeConverter;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -9,9 +11,18 @@ public class Task {
 
     @Id
     private String id;
+
+    @Column(name = "project_id")
     private String projectId;
+
+    @Column(name = "text")
     private String text;
+
+    @Column(name = "status")
     private String status;
+
+    @Column(name = "completed_at", columnDefinition = "TIMESTAMP")
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime completedAt;
 
     public Task() {

@@ -21,9 +21,9 @@ public class TaskService {
     private final TaskLogRepository taskLogRepository;
 
     public TaskService(
-        TaskRepository taskRepository,
-        TaskLogRepository taskLogRepository
-        ) {
+            TaskRepository taskRepository,
+            TaskLogRepository taskLogRepository
+    ) {
         this.taskRepository = taskRepository;
         this.taskLogRepository = taskLogRepository;
     }
@@ -56,8 +56,15 @@ public class TaskService {
         }
 
         String oldStatus = task.getStatus();
+
+        LocalDateTime completedAt = "Done".equals(status)
+                ? LocalDateTime.now()
+                : null;
+
         task.setStatus(status);
+        task.setCompletedAt(completedAt);
         taskRepository.save(task);
+
         addTaskLog(task, oldStatus);
         return null;
     }
