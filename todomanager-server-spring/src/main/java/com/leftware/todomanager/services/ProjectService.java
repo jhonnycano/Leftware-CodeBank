@@ -1,39 +1,60 @@
 package com.leftware.todomanager.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.leftware.todomanager.models.Project;
+import com.leftware.todomanager.entities.Project;
+import com.leftware.todomanager.models.ProjectModel;
+import com.leftware.todomanager.repositories.ProjectRepository;
 
 @Service
 public class ProjectService {
 
-    public final List<Project> projects;
+    private final ProjectRepository projectRepository;
 
-    public ProjectService() {
-        List<Project> projectList = new ArrayList<>();
-        projectList.add(new Project("123", "home"));
-        projectList.add(new Project(UUID.randomUUID().toString(), "work"));
-
-        this.projects = projectList;
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
     }
 
-    public List<Project> getProjects() {
-        return projects;
+    public List<ProjectModel> getProjects() {
+        return projectRepository
+                .findAll()
+                .stream()
+                .map(this::convertToProjectModel)
+                .collect(Collectors.toList());
     }
 
-    public Project getProjectById(String projectId) {
-        Project project = projects.stream()
-                .filter(p -> (p.getId().equals(projectId)))
-                .findFirst()
-                .orElse(null);
+    public ProjectModel getProjectById(String projectId) {
+        ProjectModel project = convertToProjectModel(projectRepository.findById(projectId).orElse(null));
         return project;
     }
 
-    public void addProject(Project project) {
-        projects.add(project);
+    public void addProject(ProjectModel projectModel) {
+        Project project = convertToProject(projectModel);
+        projectRepository.save(project);
+    }
+
+    private Project convertToProject(ProjectModel projectModel) {
+        if (projectModel == null) {
+            return null;
+        }
+        Project project = new Project();
+        project.setId(projectModel.getId());
+        project.setName(projectModel.getName());
+
+        return project;
+    }
+
+    private ProjectModel convertToProjectModel(Project project) {
+        if (project == null) {
+            return null;
+        }
+        ProjectModel projectModel = new ProjectModel();
+        projectModel.setId(project.getId());
+        projectModel.setName(project.getName());
+
+        return projectModel;
     }
 }

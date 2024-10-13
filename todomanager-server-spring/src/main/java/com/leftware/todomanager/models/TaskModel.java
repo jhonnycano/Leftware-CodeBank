@@ -2,7 +2,7 @@ package com.leftware.todomanager.models;
 
 import java.time.LocalDateTime;
 
-public class Task {
+public class TaskModel {
 
     private String id;
     private String projectId;
@@ -10,7 +10,10 @@ public class Task {
     private String status;
     private LocalDateTime completedAt;
 
-    public Task(String id, String projectId, String text, String status, LocalDateTime completedAt) {
+    public TaskModel() {
+    }
+
+    public TaskModel(String id, String projectId, String text, String status, LocalDateTime completedAt) {
         this.id = id;
         this.projectId = projectId;
         this.text = text;

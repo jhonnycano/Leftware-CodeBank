@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.leftware.todomanager.common.Constants;
-import com.leftware.todomanager.models.Task;
+import com.leftware.todomanager.models.TaskModel;
 import com.leftware.todomanager.services.ProjectService;
 import com.leftware.todomanager.services.TaskService;
 
@@ -39,7 +39,7 @@ public class ChangeTaskStatusController {
             model.addAttribute("message", "Project not found");
             return "layout";
         }
-        Task task = taskService.getTaskById(projectId, taskId);
+        TaskModel task = taskService.getTaskById(projectId, taskId);
         if (task == null) {
             model.addAttribute("content", Constants.VIEW_HOME);
             model.addAttribute("message", "Task not found");

@@ -1,14 +1,14 @@
 package com.leftware.todomanager.models;
 
-public class Project {
+public class ProjectModel {
 
     private String id;
     private String name;
 
-    public Project() {
+    public ProjectModel() {
     }
 
-    public Project(String id, String name) {
+    public ProjectModel(String id, String name) {
         this.id = id;
         this.name = name;
     }

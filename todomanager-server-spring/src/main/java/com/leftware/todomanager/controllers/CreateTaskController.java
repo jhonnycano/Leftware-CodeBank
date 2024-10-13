@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.leftware.todomanager.common.Constants;
 import com.leftware.todomanager.models.CreateTaskRequest;
-import com.leftware.todomanager.models.Task;
+import com.leftware.todomanager.models.TaskModel;
 import com.leftware.todomanager.services.ProjectService;
 import com.leftware.todomanager.services.TaskService;
 
@@ -63,7 +63,7 @@ public class CreateTaskController {
 
         UUID uuid = UUID.randomUUID();
         String id = uuid.toString();
-        Task task = new Task(id, projectId, createTaskRequest.getText(), "Pending", null);
+        TaskModel task = new TaskModel(id, projectId, createTaskRequest.getText(), "Pending", null);
         taskService.addTask(task);
 
         return String.format("redirect:/web/projects/%s", projectId);

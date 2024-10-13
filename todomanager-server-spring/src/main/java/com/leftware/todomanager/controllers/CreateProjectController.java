@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.leftware.todomanager.common.Constants;
 import com.leftware.todomanager.models.CreateProjectRequest;
-import com.leftware.todomanager.models.Project;
+import com.leftware.todomanager.models.ProjectModel;
 import com.leftware.todomanager.services.ProjectService;
 
 @Controller
@@ -41,7 +41,7 @@ public class CreateProjectController {
     ) {
         UUID uuid = UUID.randomUUID();
         String id = uuid.toString();
-        Project project = new Project(id, createProjectRequest.getName());
+        ProjectModel project = new ProjectModel(id, createProjectRequest.getName());
         projectService.addProject(project);
 
         String projectTitle = String.format("Project %s: %s", id, project.getName());
