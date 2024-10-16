@@ -10,7 +10,7 @@ import org.hibernate.dialect.pagination.LimitOffsetLimitHandler;
 public class SQLiteDialect extends Dialect {
 
     public SQLiteDialect() {
-        super(DatabaseVersion.make(3, 36));  // SQLite version (change if needed)
+        super(DatabaseVersion.make(3, 36));
     }
 
     @Override
@@ -28,12 +28,12 @@ public class SQLiteDialect extends Dialect {
 
             @Override
             public String getIdentityColumnString(int type) {
-                return "integer";  // Auto-increment column type in SQLite
+                return "integer";
             }
 
             @Override
             public String getIdentitySelectString(String table, String column, int type) {
-                return "select last_insert_rowid()";  // Get last inserted ID
+                return "select last_insert_rowid()";
             }
         };
     }
