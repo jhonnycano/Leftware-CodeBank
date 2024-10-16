@@ -1,4 +1,4 @@
-package com.leftware.todomanager.controllers;
+package com.leftware.todomanager.controllers.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,12 +8,12 @@ import com.leftware.todomanager.common.Constants;
 import com.leftware.todomanager.services.ProjectService;
 
 @Controller
-public class GetProjectListController {
+public class WebGetProjectListController {
 
     private final ProjectService projectService;
 
     //@Autowired
-    public GetProjectListController(ProjectService projectService) {
+    public WebGetProjectListController(ProjectService projectService) {
         this.projectService = projectService;
     }
 

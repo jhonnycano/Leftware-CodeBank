@@ -1,4 +1,4 @@
-package com.leftware.todomanager.controllers;
+package com.leftware.todomanager.controllers.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

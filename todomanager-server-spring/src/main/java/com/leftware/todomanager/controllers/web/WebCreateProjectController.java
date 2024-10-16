@@ -1,4 +1,4 @@
-package com.leftware.todomanager.controllers;
+package com.leftware.todomanager.controllers.web;
 
 import java.util.UUID;
 
@@ -14,12 +14,12 @@ import com.leftware.todomanager.models.ProjectModel;
 import com.leftware.todomanager.services.ProjectService;
 
 @Controller
-public class CreateProjectController {
+public class WebCreateProjectController {
 
     private final ProjectService projectService;
 
     //@Autowired
-    public CreateProjectController(
+    public WebCreateProjectController(
             ProjectService projectService
     ) {
         this.projectService = projectService;

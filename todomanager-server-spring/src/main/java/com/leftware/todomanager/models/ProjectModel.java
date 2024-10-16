@@ -1,9 +1,12 @@
 package com.leftware.todomanager.models;
 
+import java.util.List;
+
 public class ProjectModel {
 
     private String id;
     private String name;
+    private List<TaskModel> tasks;
 
     public ProjectModel() {
     }
@@ -28,6 +31,14 @@ public class ProjectModel {
     public void setName(String name) {
         this.name = name;
 
+    }
+
+    public List<TaskModel> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskModel> tasks) {
+        this.tasks = tasks;
     }
 
     @Override

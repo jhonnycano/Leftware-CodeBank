@@ -1,4 +1,4 @@
-package com.leftware.todomanager.controllers;
+package com.leftware.todomanager.controllers.web;
 
 import java.util.UUID;
 
@@ -16,13 +16,13 @@ import com.leftware.todomanager.services.ProjectService;
 import com.leftware.todomanager.services.TaskService;
 
 @Controller
-public class CreateTaskController {
+public class WebCreateTaskController {
 
     private final TaskService taskService;
     private final ProjectService projectService;
 
     //@Autowired
-    public CreateTaskController(
+    public WebCreateTaskController(
             ProjectService projectService,
             TaskService taskService
     ) {

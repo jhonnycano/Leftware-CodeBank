@@ -1,4 +1,6 @@
-package com.leftware.todomanager.controllers;
+package com.leftware.todomanager.controllers.web;
+
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,18 +9,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.leftware.todomanager.common.Constants;
+import com.leftware.todomanager.models.ProjectModel;
 import com.leftware.todomanager.models.TaskModel;
 import com.leftware.todomanager.services.ProjectService;
 import com.leftware.todomanager.services.TaskService;
 
 @Controller
-public class ChangeTaskStatusController {
+public class WebGetProjectController {
 
-    private final TaskService taskService;
     private final ProjectService projectService;
+    private final TaskService taskService;
 
     //@Autowired
-    public ChangeTaskStatusController(
+    public WebGetProjectController(
             ProjectService projectService,
             TaskService taskService
     ) {
@@ -26,33 +29,27 @@ public class ChangeTaskStatusController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/web/projects/{projectId}/tasks/{taskId}/changestatus")
+    @GetMapping("/web/projects/{projectId}")
     public String execute(
             @PathVariable String projectId,
-            @PathVariable String taskId,
-            @RequestParam(defaultValue="") String status,
+            @RequestParam(name = "mode", defaultValue = "board")  String mode,
             Model model
     ) {
-        var project = projectService.getProjectById(projectId);
+        ProjectModel project = projectService.getProjectById(projectId);
         if (project == null) {
             model.addAttribute("content", Constants.VIEW_HOME);
             model.addAttribute("message", "Project not found");
             return "layout";
         }
-        TaskModel task = taskService.getTaskById(projectId, taskId);
-        if (task == null) {
-            model.addAttribute("content", Constants.VIEW_HOME);
-            model.addAttribute("message", "Task not found");
-            return "layout";
-        }
 
-        String changeStatusResult = taskService.changeStatus(projectId, taskId, status);
-        if (changeStatusResult != null) {
-            model.addAttribute("content", Constants.VIEW_HOME);
-            model.addAttribute("message", changeStatusResult);
-            return "layout";
-        }
+        List<TaskModel> tasks = taskService.getTasksByProjectId(projectId);
+        String projectTitle = String.format("Project %s: %s", projectId, project.getName());
 
-        return String.format("redirect:/web/projects/%s", projectId);
+        model.addAttribute("project", project);
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("title", projectTitle);
+        model.addAttribute("mode", mode);
+        model.addAttribute("content", Constants.VIEW_PROJECT_VIEW);
+        return "layout";
     }
 }

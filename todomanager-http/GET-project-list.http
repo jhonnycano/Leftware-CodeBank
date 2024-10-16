@@ -1,0 +1,6 @@
+GET http://localhost:8080/api/projects
+Accept: application/json
+
+{{
+    projectId = response.parsedBody[0].id;
+}}
