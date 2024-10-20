@@ -1,7 +1,9 @@
 package com.leftware.todomanager.models;
 
 public class CreateProjectRequest {
-    public String name;
+
+    // @JsonProperty("name")
+    private String name;
 
     public String getName() {
         return name;
