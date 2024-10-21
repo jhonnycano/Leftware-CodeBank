@@ -2,6 +2,7 @@ package com.leftware.todomanager.models;
 
 import java.util.List;
 
+// @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProjectModel {
 
     private String id;

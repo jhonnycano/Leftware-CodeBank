@@ -1,0 +1,6 @@
+POST /api/projects/{{projectId}}/tasks
+Content-Type: application/json
+
+{
+    "text": "Test task"
+}

@@ -1,2 +1,10 @@
-GET http://localhost:8080/api/projects/{{projectId}}
+GET /api/projects/{{projectId}}
 Accept: application/json
+
+{{
+    if (response.parsedBody.tasks 
+        && response.parsedBody.tasks.length 
+        && response.parsedBody.tasks.length > 0) {
+        taskId = response.parsedBody.tasks[response.parsedBody.tasks.length-1].id;
+    }
+}}

@@ -2,6 +2,7 @@ package com.leftware.todomanager.models;
 
 import java.time.LocalDateTime;
 
+// @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskModel {
 
     private String id;

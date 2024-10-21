@@ -1,0 +1,6 @@
+{{
+exports.newStatus = "In Progress";
+//exports.newStatus = "Done";
+}}
+PUT /api/projects/{{projectId}}/tasks/{{taskId}}/status?status={{newStatus}}
+Content-Type: application/json

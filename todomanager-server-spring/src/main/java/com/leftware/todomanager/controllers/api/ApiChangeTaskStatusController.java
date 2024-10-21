@@ -1,8 +1,8 @@
 package com.leftware.todomanager.controllers.api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +25,7 @@ public class ApiChangeTaskStatusController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/api/projects/{projectId}/tasks/{taskId}/changestatus")
+    @PutMapping("/api/projects/{projectId}/tasks/{taskId}/status")
     public ResponseEntity<String> execute(
             @PathVariable String projectId,
             @PathVariable String taskId,
