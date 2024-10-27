@@ -5,6 +5,7 @@ import Home from './Home';
 import About from './About';
 import ProjectList from './ProjectList';
 import ProjectCreate from './ProjectCreate';
+import ProjectView from './ProjectView';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<ProjectList />} />
         <Route path="/projects/new" element={<ProjectCreate />} />
+        <Route path="/projects/:id" element={<ProjectView />} />
       </Routes>
     </Router>
   )

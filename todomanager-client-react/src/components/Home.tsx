@@ -1,12 +1,8 @@
 import { Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { HomeInput } from '../interfaces/HomeInput';
 
-interface IHome {
-    message?: string;
-    messageType?: 'danger' | 'success' | 'warning' | 'info' | 'primary';
-}
-
-const Home: React.FC<IHome> = ({ message, messageType }) => {
+const Home: React.FC<HomeInput> = ({ message, messageType }) => {
     return (
         <>
             {message && (
