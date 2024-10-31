@@ -21,7 +21,9 @@ export class ProjectService {
     }
 
     async createTask(projectId: string, text: string): Promise<TaskModel> {
-        const response = await axios.post(`${this.baseUrl}/projects/${projectId}/tasks`, { text });
+        const payload = { text };
+        console.log('createTask payload', payload);
+        const response = await axios.post(`${this.baseUrl}/projects/${projectId}/tasks`, payload);
         return response.data;
     }
 

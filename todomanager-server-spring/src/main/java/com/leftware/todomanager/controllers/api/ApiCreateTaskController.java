@@ -3,9 +3,9 @@ package com.leftware.todomanager.controllers.api;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leftware.todomanager.models.CreateTaskRequest;
@@ -31,7 +31,7 @@ public class ApiCreateTaskController {
     @PostMapping("/api/projects/{projectId}/tasks")
     public ResponseEntity<TaskModel> execute(
             @PathVariable String projectId,
-            @ModelAttribute CreateTaskRequest createTaskRequest
+            @RequestBody CreateTaskRequest createTaskRequest
     ) {
         var project = projectService.getProjectById(projectId);
         if (project == null) {

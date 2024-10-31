@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import TaskListTable from './TaskListTable';
 import { ProjectModel } from '../interfaces/ProjectModel';
 import { ProjectViewInput } from '../interfaces/ProjectViewInput';
@@ -44,7 +44,9 @@ const ProjectView: React.FC<ProjectViewInput> = ({ mode }) => {
                 ? <TaskListTable tasks={project.tasks} />
                 : <div />
             }
+            <Link to={`/projects/${project.id}/tasks/new`}>Create task</Link>
         </div>
+        
     );
 };
 
